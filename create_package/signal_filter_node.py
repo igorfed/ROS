@@ -1,21 +1,19 @@
-# original code https://www.youtube.com/watch?v=YKX4E9Vh-ug&t=4427s
+#!/usr/bin/env python3
 import rospy
 import numpy as np 
-from std_msg.msg import Float32 
+from std_msgs.msg import Float32 
 from collection import deque
-
 class SignalFilter(object):
     def __init__(self):
         # Creating subscriber for the signal and publisher for the filtered one 
-        self.signal_pub = rospy.Publisher ("signal", 
+        self.signal_sub = rospy.Subscriber ("signal", 
                                            Float32, 
-                                           queue_size =10)
-        # Buffer to store last 5 signal values
-        self.signal_pub = rospy.Publisher("filtered signal", Float32,
-                                          )
+                                           self.signal_callback)
+        self.signal_pub = rospy.Publisher("filtered_signal", 
+                                          Float32,
+                                          queue_size=10)
         # Buffer to store last 5 signal values
         self.signal_window = deque([], 5)
-        
     def signal_callback (self, signal):
         # Logging received data
         rospy.loginfo("I've got {}".format(signal.data))
